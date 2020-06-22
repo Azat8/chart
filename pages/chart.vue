@@ -50,17 +50,20 @@ export default {
         async getChartData() {
             this.loading = true;
             let {date} = this;
-            
-            let data = await this.$axios.get('/user/get-users', {params:{date}});
-            this.chartData.labels = data.data.data.map(item => {
-                let d = new Date(item.createdAt);
+            let data = await this.$axios.get('/user/get-users', {params:{date}});            
 
-                return moment(d).format('MM/DD hh:mm');
-            });
-            this.chartData.datasets[0].data = data.data.data.map(item => {
+            let arr = {};
+            data.data.data.map(item => {
                 let d = item.createdAt
-                return new Date(item.createdAt).getHours();
+                if(arr[new Date(d).getHours()]) {
+                    arr[new Date(d).getHours()]++
+                } else {
+                    arr[new Date(d).getHours()] = 1;
+                }
             });
+
+            this.chartData.datasets[0].data = Object.values(arr);
+            this.chartData.labels = Object.keys(arr);
             
             this.loading = false;
         },

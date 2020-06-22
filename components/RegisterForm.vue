@@ -88,7 +88,9 @@
                 let data = await this.$axios.post('/user/register', {email, username, password, password_c}).then((res) => {
                     let {data} = res.data;
                     
-                    this.$auth.loginWith('local', {data: {...data, password}}).then(() => this.$toast.success('Successfuly login!'));
+                    this.$auth.loginWith('local', {data: {...data, password}}).then(() => {
+                        console.log('Successfuly login!');
+                    });
                 }).catch(err => {
                     this.errors = err.response.data.data.errors;
                 });
